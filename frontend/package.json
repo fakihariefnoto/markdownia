@@ -1,0 +1,13 @@
+{
+  "name": "markdownia-frontend",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "bun --cwd ../web run dev",
+    "build": "bun --cwd ../web run build && bun run copy:dist",
+    "build:dev": "bun --cwd ../web run build && bun run copy:dist",
+    "copy:dist": "node scripts/copy-dist.mjs"
+  },
+  "devDependencies": {}
+}

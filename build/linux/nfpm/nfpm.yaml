@@ -1,0 +1,58 @@
+# nfpm configuration for the Markdownia .deb (build/tasks/06)
+# Invoked by the Wails linux:package Taskfile from the repo root:
+#   wails3 tool package -config ./build/linux/nfpm/nfpm.yaml
+# Source paths are relative to the repo root.
+
+name: markdownia
+arch: amd64
+platform: linux
+version: "0.1.0"
+section: text
+priority: optional
+maintainer: "Anofac <markdownia@anofac.com>"
+description: |
+  Turn any pile of markdown — a folder, a git repo, a zip — into a beautifully
+  rendered, fully offline reading library.
+homepage: https://github.com/anofac/markdownia
+license: MIT
+
+contents:
+  # The binary
+  - src: bin/markdownia
+    dst: /usr/bin/markdownia
+    file_info:
+      mode: 0755
+
+  # Desktop entry (launcher + .md "Open with")
+  - src: build/linux/markdownia.desktop
+    dst: /usr/share/applications/markdownia.desktop
+    file_info:
+      mode: 0644
+
+  # MIME registration — registers as a handler for the existing text/markdown
+  # type, never a duplicate type.
+  - src: build/linux/markdownia.xml
+    dst: /usr/share/mime/packages/markdownia.xml
+    file_info:
+      mode: 0644
+
+  # Hicolor icon set (16→512)
+  - src: build/linux/icons/16x16/markdownia.png
+    dst: /usr/share/icons/hicolor/16x16/apps/markdownia.png
+  - src: build/linux/icons/32x32/markdownia.png
+    dst: /usr/share/icons/hicolor/32x32/apps/markdownia.png
+  - src: build/linux/icons/48x48/markdownia.png
+    dst: /usr/share/icons/hicolor/48x48/apps/markdownia.png
+  - src: build/linux/icons/128x128/markdownia.png
+    dst: /usr/share/icons/hicolor/128x128/apps/markdownia.png
+  - src: build/linux/icons/256x256/markdownia.png
+    dst: /usr/share/icons/hicolor/256x256/apps/markdownia.png
+  - src: build/linux/icons/512x512/markdownia.png
+    dst: /usr/share/icons/hicolor/512x512/apps/markdownia.png
+
+depends:
+  - libgtk-3-0
+  - libwebkit2gtk-4.1-0
+
+scripts:
+  postinstall: build/linux/nfpm/scripts/postinstall.sh

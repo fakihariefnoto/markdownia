@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Markdownia
+Comment=Read markdown libraries offline
+Exec=markdownia %f
+Icon=markdownia
+Terminal=false
+Categories=Office;Viewer;TextTools;
+StartupWMClass=Markdownia
+MimeType=text/markdown;text/x-markdown;

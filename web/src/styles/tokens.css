@@ -1,0 +1,701 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* ============================================================
+   Markdownia design tokens — the two-layer theme model
+   ============================================================
+
+   Two independent namespaces:
+     - color.*  → app chrome (sidebar, tabs, dialogs, buttons)
+     - read.*   → reading surface (the rendered document)
+
+   The firewall rule is load-bearing: nothing in chrome may use a
+   read.* token and nothing in the document may use a color.* token.
+   Every theme defines every token — there is no inheritance.
+
+   Themes apply by swapping data-theme and data-reading-theme on <html>.
+   ============================================================ */
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* ============================================================
+   Tailwind v4 theme — exposes the shadcn CSS variables as
+   utilities (bg-background, text-foreground, border-border, …).
+   ============================================================ */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-full: 9999px;
+
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+
+  --elevation-sm: 0 1px 2px rgba(0,0,0,0.08);
+  --elevation-md: 0 2px 8px rgba(0,0,0,0.10);
+  --elevation-lg: 0 4px 16px rgba(0,0,0,0.14);
+
+  --motion-fast: 100ms;
+  --motion-base: 180ms;
+  --motion-slow: 300ms;
+
+  --size-touch-min: 40px;
+  --size-button-height: 40px;
+  --size-button-height-sm: 32px;
+  --size-input-height: 40px;
+  --size-input-height-lg: 52px;
+  --size-icon: 20px;
+  --size-icon-sm: 16px;
+  --size-sidebar-width: 280px;
+  --size-navrail-width: 56px;
+  --size-outline-width: 240px;
+  --size-titlebar-height: 40px;
+  --size-toolbar-height: 44px;
+  --size-tab-min-width: 120px;
+  --size-tab-max-width: 220px;
+  --size-splitter: 4px;
+}
+
+/* ============================================================
+   shadcn/ui CSS variable bridge — mapped onto color.* tokens
+   ============================================================ */
+
+:root,
+[data-theme="light"] {
+  /* Chrome palette (source of truth for the shadcn bridge) */
+  --color-background: #F9FAFB;
+  --color-surface: #EDF0F3;
+  --color-surface-raised: #FFFFFF;
+  --color-border: #D4DBE3;
+  --color-text: #17191C;
+  --color-text-muted: #5C6670;
+  --color-primary: #0E7490;
+  --color-on-primary: #FFFFFF;
+  --color-accent: #0E7490;
+  --color-error: #C52B20;
+  --color-success: #1F7A40;
+  --color-warning: #A15C07;
+  --color-disabled: #D4DBE3;
+  --color-on-disabled: #8A939B;
+  --color-overlay: rgba(23,25,28,0.45);
+
+  /* shadcn/ui surface */
+  --background: var(--color-background);
+  --foreground: var(--color-text);
+  --card: var(--color-surface-raised);
+  --card-foreground: var(--color-text);
+  --popover: var(--color-surface-raised);
+  --popover-foreground: var(--color-text);
+  --primary: var(--color-primary);
+  --primary-foreground: var(--color-on-primary);
+  --secondary: var(--color-surface);
+  --secondary-foreground: var(--color-text);
+  --muted: var(--color-surface);
+  --muted-foreground: var(--color-text-muted);
+  --accent: var(--color-surface);
+  --accent-foreground: var(--color-text);
+  --destructive: var(--color-error);
+  --destructive-foreground: #FFFFFF;
+  --border: var(--color-border);
+  --input: var(--color-border);
+  --ring: var(--color-primary);
+  --radius: 0.5rem;
+  --sidebar: var(--color-surface-raised);
+  --sidebar-foreground: var(--color-text);
+  --sidebar-primary: var(--color-primary);
+  --sidebar-primary-foreground: var(--color-on-primary);
+  --sidebar-accent: var(--color-surface);
+  --sidebar-accent-foreground: var(--color-text);
+  --sidebar-border: var(--color-border);
+  --sidebar-ring: var(--color-primary);
+}
+
+[data-theme="dark"] {
+  /* Chrome palette — dark */
+  --color-background: #161C1D;
+  --color-surface: #212A2B;
+  --color-surface-raised: #2A3435;
+  --color-border: #374649;
+  --color-text: #F1F3F4;
+  --color-text-muted: #9DACAF;
+  --color-primary: #2EC2EB;
+  --color-on-primary: #161C1D;   /* dark ink, NOT white — 8.24:1 */
+  --color-accent: #2EC2EB;
+  --color-error: #E46258;
+  --color-success: #47D17A;
+  --color-warning: #E0A53C;
+  --color-disabled: #374649;
+  --color-on-disabled: #6E8085;
+  --color-overlay: rgba(0,0,0,0.60);
+
+  --background: var(--color-background);
+  --foreground: var(--color-text);
+  --card: var(--color-surface);
+  --card-foreground: var(--color-text);
+  --popover: var(--color-surface-raised);
+  --popover-foreground: var(--color-text);
+  --primary: var(--color-primary);
+  --primary-foreground: var(--color-on-primary);
+  --secondary: var(--color-surface);
+  --secondary-foreground: var(--color-text);
+  --muted: var(--color-surface);
+  --muted-foreground: var(--color-text-muted);
+  --accent: var(--color-surface);
+  --accent-foreground: var(--color-text);
+  --destructive: var(--color-error);
+  --destructive-foreground: #FFFFFF;
+  --border: var(--color-border);
+  --input: var(--color-border);
+  --ring: var(--color-primary);
+  --sidebar: var(--color-surface);
+  --sidebar-foreground: var(--color-text);
+  --sidebar-primary: var(--color-primary);
+  --sidebar-primary-foreground: var(--color-on-primary);
+  --sidebar-accent: var(--color-surface-raised);
+  --sidebar-accent-foreground: var(--color-text);
+  --sidebar-border: var(--color-border);
+  --sidebar-ring: var(--color-primary);
+}
+
+/* ============================================================
+   Accents (override primary/on-primary/accent only)
+   ============================================================ */
+[data-accent="indigo"] {
+  --color-primary: #4338CA;
+  --color-accent: #4338CA;
+  --primary: var(--color-primary);
+  --ring: var(--color-primary);
+  --sidebar-primary: var(--color-primary);
+  --sidebar-ring: var(--color-primary);
+}
+[data-theme="dark"][data-accent="indigo"] {
+  --color-primary: #8B87F5;
+  --color-on-primary: #16161F;
+  --color-accent: #8B87F5;
+  --primary: var(--color-primary);
+  --ring: var(--color-primary);
+}
+[data-accent="forest"] {
+  --color-primary: #15803D;
+  --color-accent: #15803D;
+  --primary: var(--color-primary);
+  --ring: var(--color-primary);
+  --sidebar-primary: var(--color-primary);
+  --sidebar-ring: var(--color-primary);
+}
+[data-theme="dark"][data-accent="forest"] {
+  --color-primary: #48D07A;
+  --color-on-primary: #141C17;
+  --color-accent: #48D07A;
+  --primary: var(--color-primary);
+  --ring: var(--color-primary);
+}
+[data-accent="copper"] {
+  --color-primary: #9A3412;
+  --color-accent: #9A3412;
+  --primary: var(--color-primary);
+  --ring: var(--color-primary);
+  --sidebar-primary: var(--color-primary);
+  --sidebar-ring: var(--color-primary);
+}
+[data-theme="dark"][data-accent="copper"] {
+  --color-primary: #F08A5C;
+  --color-on-primary: #1D1613;
+  --color-accent: #F08A5C;
+  --primary: var(--color-primary);
+  --ring: var(--color-primary);
+}
+[data-accent="plum"] {
+  --color-primary: #86198F;
+  --color-accent: #86198F;
+  --primary: var(--color-primary);
+  --ring: var(--color-primary);
+  --sidebar-primary: var(--color-primary);
+  --sidebar-ring: var(--color-primary);
+}
+[data-theme="dark"][data-accent="plum"] {
+  --color-primary: #E07AE8;
+  --color-on-primary: #1C141D;
+  --color-accent: #E07AE8;
+  --primary: var(--color-primary);
+  --ring: var(--color-primary);
+}
+[data-accent="slate"] {
+  --color-primary: #334155;
+  --color-accent: #334155;
+  --primary: var(--color-primary);
+  --ring: var(--color-primary);
+  --sidebar-primary: var(--color-primary);
+  --sidebar-ring: var(--color-primary);
+}
+[data-theme="dark"][data-accent="slate"] {
+  --color-primary: #A3B2C7;
+  --color-on-primary: #15181D;
+  --color-accent: #A3B2C7;
+  --primary: var(--color-primary);
+  --ring: var(--color-primary);
+}
+
+/* ============================================================
+   Reading surface: light family
+   ============================================================ */
+[data-reading-theme="paper"] {
+  --read-background: #FFFFFF;
+  --read-text: #1F2328;
+  --read-heading: #0D1117;
+  --read-muted: #656D76;
+  --read-link: #0969DA;
+  --read-link-visited: #6639BA;
+  --read-rule: #D8DEE4;
+  --read-code-inline-bg: #F0F2F5;
+  --read-code-block-bg: #F6F8FA;
+  --read-code-border: #D8DEE4;
+  --read-table-header-bg: #F0F2F5;
+  --read-table-stripe: #FAFBFC;
+  --read-chroma: github;
+}
+
+[data-reading-theme="sepia"] {
+  --read-background: #F7F1E3;
+  --read-text: #3A3226;
+  --read-heading: #241E14;
+  --read-muted: #7A6E58;
+  --read-link: #8A5A20;
+  --read-link-visited: #6B4A7A;
+  --read-rule: #DFD5BE;
+  --read-code-inline-bg: #EDE4CE;
+  --read-code-block-bg: #F1E8D2;
+  --read-code-border: #DFD5BE;
+  --read-table-header-bg: #EDE4CE;
+  --read-table-stripe: #F3ECDA;
+  --read-chroma: friendly;
+}
+
+[data-reading-theme="solarized"] {
+  --read-background: #FDF6E3;
+  --read-text: #586E75;
+  --read-heading: #073642;
+  --read-muted: #93A1A1;
+  --read-link: #268BD2;
+  --read-link-visited: #6C71C4;
+  --read-rule: #EEE8D5;
+  --read-code-inline-bg: #EEE8D5;
+  --read-code-block-bg: #EEE8D5;
+  --read-code-border: #E3DCC5;
+  --read-table-header-bg: #EEE8D5;
+  --read-table-stripe: #F7F0DD;
+  --read-chroma: solarized-light;
+}
+
+/* ============================================================
+   Reading surface: dark family
+   ============================================================ */
+[data-reading-theme="nord"] {
+  --read-background: #2E3440;
+  --read-text: #D8DEE9;
+  --read-heading: #ECEFF4;
+  --read-muted: #8896AB;
+  --read-link: #88C0D0;
+  --read-link-visited: #B48EAD;
+  --read-rule: #434C5E;
+  --read-code-inline-bg: #3B4252;
+  --read-code-block-bg: #292E39;
+  --read-code-border: #434C5E;
+  --read-table-header-bg: #3B4252;
+  --read-table-stripe: #333A47;
+  --read-chroma: nord;
+}
+
+[data-reading-theme="dracula"] {
+  --read-background: #282A36;
+  --read-text: #F8F8F2;
+  --read-heading: #FFFFFF;
+  --read-muted: #8E92A8;
+  --read-link: #8BE9FD;
+  --read-link-visited: #BD93F9;
+  --read-rule: #44475A;
+  --read-code-inline-bg: #343746;
+  --read-code-block-bg: #21222C;
+  --read-code-border: #44475A;
+  --read-table-header-bg: #343746;
+  --read-table-stripe: #2D2F3D;
+  --read-chroma: dracula;
+}
+
+[data-reading-theme="gruvbox"] {
+  --read-background: #282828;
+  --read-text: #EBDBB2;
+  --read-heading: #FBF1C7;
+  --read-muted: #A89984;
+  --read-link: #83A598;
+  --read-link-visited: #D3869B;
+  --read-rule: #3C3836;
+  --read-code-inline-bg: #32302F;
+  --read-code-block-bg: #1D2021;
+  --read-code-border: #3C3836;
+  --read-table-header-bg: #32302F;
+  --read-table-stripe: #2E2B28;
+  --read-chroma: gruvbox;
+}
+
+/* ============================================================
+   Highlight colors, per family
+   ============================================================ */
+[data-reading-theme="paper"],
+[data-reading-theme="sepia"],
+[data-reading-theme="solarized"] {
+  --highlight-yellow: #FFF3A3;
+  --highlight-green: #C8F0CE;
+  --highlight-blue: #C7E4FA;
+  --highlight-pink: #FBD3E4;
+  --highlight-orange: #FBDDBC;
+}
+
+[data-reading-theme="nord"],
+[data-reading-theme="dracula"],
+[data-reading-theme="gruvbox"] {
+  --highlight-yellow: rgba(255,214,51,0.28);
+  --highlight-green: rgba(71,209,122,0.24);
+  --highlight-blue: rgba(93,176,240,0.26);
+  --highlight-pink: rgba(240,122,178,0.26);
+  --highlight-orange: rgba(240,150,70,0.26);
+}
+
+/* ============================================================
+   Chrome type scale (16/1.2) and reading type scale
+   ============================================================ */
+
+:root {
+  --text-display: 33px;
+  --text-display-lh: 40px;
+  --text-heading-lg: 28px;
+  --text-heading-lg-lh: 36px;
+  --text-heading-md: 23px;
+  --text-heading-md-lh: 32px;
+  --text-heading-sm: 19px;
+  --text-heading-sm-lh: 28px;
+  --text-body: 16px;
+  --text-body-lh: 24px;
+  --text-button: 16px;
+  --text-button-lh: 24px;
+  --text-label: 13px;
+  --text-label-lh: 20px;
+  --text-caption: 13px;
+  --text-caption-lh: 20px;
+
+  /* Reading surface (100% zoom baseline; reading-size multiplies these) */
+  --read-h1: 32px;
+  --read-h1-lh: 40px;
+  --read-h2: 26px;
+  --read-h2-lh: 36px;
+  --read-h3: 21px;
+  --read-h3-lh: 28px;
+  --read-h4: 18px;
+  --read-h4-lh: 28px;
+  --read-h5: 16px;
+  --read-h5-lh: 24px;
+  --read-h6: 16px;
+  --read-h6-lh: 24px;
+  --read-body: 17px;
+  --read-body-lh: 28px;
+  --read-small: 14px;
+  --read-small-lh: 20px;
+  --read-code: 15px;
+  --read-code-lh: 24px;
+}
+
+/* ============================================================
+   Base chrome element styling
+   ============================================================ */
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: var(--text-body);
+  line-height: var(--text-body-lh);
+  color: var(--color-text);
+  background: var(--color-background);
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+
+/* Reading pane and its document content are selectable. */
+.reading-surface, .reading-surface * {
+  user-select: text;
+}
+
+/* Focus ring: never removed — this app is keyboard-driven by design. */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   Reading surface styles — styled ENTIRELY from read.* tokens
+   ============================================================ */
+
+.reading-surface {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--read-body);
+  line-height: var(--read-body-lh);
+  color: var(--read-text);
+  background: var(--read-background);
+}
+
+/* Reading zoom: the reading-size factor lives on <html data-reading-size>.
+   Apply it as a zoom so the whole surface (headings, code, spacing) scales. */
+[data-reading-size="0.875"] .reading-surface { zoom: 0.875; }
+[data-reading-size="1.125"] .reading-surface { zoom: 1.125; }
+[data-reading-size="1.25"]  .reading-surface { zoom: 1.25; }
+[data-reading-size="1.5"]   .reading-surface { zoom: 1.5; }
+
+.reading-surface[data-reading-font="serif"] {
+  font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+}
+
+.reading-surface .doc {
+  max-width: 72ch;
+  margin: 0 auto;
+  padding: var(--space-2xl) var(--space-xl);
+}
+
+.reading-surface .doc[data-measure="60ch"] { max-width: 60ch; }
+.reading-surface .doc[data-measure="88ch"] { max-width: 88ch; }
+.reading-surface .doc[data-measure="full"] { max-width: none; }
+
+.reading-surface h1, .reading-surface h2, .reading-surface h3,
+.reading-surface h4, .reading-surface h5, .reading-surface h6 {
+  color: var(--read-heading);
+  font-weight: 700;
+  line-height: 1.25;
+  margin-top: 1.8em;
+  margin-bottom: 0.6em;
+}
+.reading-surface h1 { font-size: var(--read-h1); margin-top: 0; margin-bottom: 0.6em; }
+.reading-surface h2 { font-size: var(--read-h2); border-bottom: 1px solid var(--read-rule); padding-bottom: 0.3em; }
+.reading-surface h3 { font-size: var(--read-h3); }
+.reading-surface h4 { font-size: var(--read-h4); }
+.reading-surface h5 { font-size: var(--read-h5); }
+.reading-surface h6 { font-size: var(--read-h6); color: var(--read-muted); }
+
+.reading-surface p { margin: 0 0 1em; }
+.reading-surface ul, .reading-surface ol { margin: 0 0 1em; padding-left: 1.6em; }
+.reading-surface li { margin-bottom: 0.35em; }
+
+.reading-surface a {
+  color: var(--read-link);
+  text-decoration: none;
+}
+.reading-surface a:hover { text-decoration: underline; }
+.reading-surface a.visited { color: var(--read-link-visited); }
+
+.reading-surface blockquote {
+  border-left: 3px solid var(--read-rule);
+  padding-left: var(--space-md);
+  margin: 0 0 1em;
+  color: var(--read-muted);
+  font-style: italic;
+}
+
+/* Document header — first H1 gets a subtle baseline. */
+.reading-surface .doc > h1:first-child {
+  margin-top: 0;
+  padding-bottom: 0.35em;
+  border-bottom: 2px solid var(--read-rule);
+}
+
+.reading-surface code {
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--read-code);
+  background: var(--read-code-inline-bg);
+  border-radius: var(--radius-sm);
+  padding: 2px 5px;
+}
+
+.reading-surface pre {
+  background: var(--read-code-block-bg);
+  border: 1px solid var(--read-code-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  overflow-x: auto;
+  margin: 1.2em 0;
+  position: relative;
+}
+.reading-surface pre code {
+  background: none;
+  padding: 0;
+  font-size: var(--read-code);
+  line-height: var(--read-code-lh);
+}
+
+.reading-surface pre .lang-label {
+  position: absolute;
+  top: 4px;
+  right: 8px;
+  font-size: var(--text-caption);
+  color: var(--read-muted);
+}
+.reading-surface pre .copy-btn {
+  position: absolute;
+  top: 4px;
+  right: 8px;
+  opacity: 0;
+  transition: opacity var(--motion-fast);
+}
+.reading-surface pre:hover .copy-btn { opacity: 1; }
+
+.reading-surface table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 1.2em;
+}
+.reading-surface th {
+  background: var(--read-table-header-bg);
+  font-weight: 600;
+  text-align: left;
+}
+.reading-surface th, .reading-surface td {
+  border: 1px solid var(--read-rule);
+  padding: var(--space-sm) var(--space-md);
+}
+.reading-surface tr:nth-child(even) td {
+  background: var(--read-table-stripe);
+}
+.reading-surface .table-wrap {
+  overflow-x: auto;
+}
+
+.reading-surface hr {
+  border: 0;
+  border-top: 1px solid var(--read-rule);
+  margin: 2em 0;
+}
+
+.reading-surface .task-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+.reading-surface .task-item input[type="checkbox"] {
+  pointer-events: none;
+}
+
+.reading-surface img {
+  max-width: 100%;
+  border-radius: var(--radius-md);
+  margin: 0 auto;
+  display: block;
+}
+
+.reading-surface .footnotes {
+  font-size: var(--read-small);
+  color: var(--read-muted);
+  border-top: 1px solid var(--read-rule);
+  margin-top: 2em;
+  padding-top: var(--space-md);
+}
+
+.reading-surface .mermaid {
+  background: var(--read-code-block-bg);
+  border: 1px solid var(--read-code-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  text-align: center;
+  margin: 1.2em 0;
+}
+
+.reading-surface .heading-anchor {
+  float: left;
+  margin-left: -1.5em;
+  padding-right: 0.5em;
+  color: var(--read-muted);
+  opacity: 0;
+  text-decoration: none;
+}
+.reading-surface h1:hover .heading-anchor,
+.reading-surface h2:hover .heading-anchor,
+.reading-surface h3:hover .heading-anchor,
+.reading-surface h4:hover .heading-anchor,
+.reading-surface h5:hover .heading-anchor,
+.reading-surface h6:hover .heading-anchor {
+  opacity: 1;
+}
+
+/* Highlights painted by the HighlightLayer */
+.reading-surface mark.hl {
+  border-radius: var(--radius-sm);
+  padding: 0 2px;
+  cursor: pointer;
+}
+.reading-surface mark.hl.yellow { background: var(--highlight-yellow); }
+.reading-surface mark.hl.green { background: var(--highlight-green); }
+.reading-surface mark.hl.blue { background: var(--highlight-blue); }
+.reading-surface mark.hl.pink { background: var(--highlight-pink); }
+.reading-surface mark.hl.orange { background: var(--highlight-orange); }
+
+/* Broken image placeholder */
+.reading-surface .img-placeholder {
+  border: 1px dashed var(--read-rule);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  text-align: center;
+  color: var(--read-muted);
+  font-size: var(--read-small);
+}
+
+/* ============================================================
+   prefers-reduced-motion: every duration to 0ms
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0ms !important;
+    animation-duration: 0ms !important;
+  }
+}

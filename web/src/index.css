@@ -1,0 +1,33 @@
+@import "./styles/tokens.css";
+
+/* ============ App-level chrome (Tailwind/shadcn now owns most of this) ============ */
+
+::selection {
+  background: color-mix(in srgb, var(--color-primary) 30%, transparent);
+}
+
+/* Slim, theme-aware scrollbars. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+*::-webkit-scrollbar-thumb:hover { background: var(--color-text-muted); background-clip: content-box; }
+*::-webkit-scrollbar-track { background: transparent; }
+
+/* Hide scrollbars on the tab strip but keep scrollability. */
+.scrollbar-none { scrollbar-width: none; }
+.scrollbar-none::-webkit-scrollbar { display: none; }
+
+/* Utility used by the reader toolbar title clamp */
+.clamp-1 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+  <!-- text/markdown is already a shared-mime-info type; this file registers
+       Markdownia as a HANDLER for it rather than defining a duplicate type,
+       which would fight the system MIME database. -->
+  <mime-type type="text/markdown">
+    <comment>Markdown document</comment>
+    <glob pattern="*.md"/>
+    <glob pattern="*.markdown"/>
+    <glob pattern="*.mdx"/>
+    <magic priority="50">
+      <match type="string" offset="0" value="---\n"/>
+    </magic>
+  </mime-type>
+</mime-info>

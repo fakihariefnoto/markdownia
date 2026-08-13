@@ -1,0 +1,15 @@
+{
+	"fixed": {
+		"file_version": "0.1.0"
+	},
+	"info": {
+		"0000": {
+			"ProductVersion": "0.1.0",
+			"CompanyName": "Anofac",
+			"FileDescription": "Offline-first markdown reader",
+			"LegalCopyright": "© 2026, Anofac",
+			"ProductName": "Markdownia",
+			"Comments": "Turn any pile of markdown into a beautifully rendered reading library."
+		}
+	}
+}
