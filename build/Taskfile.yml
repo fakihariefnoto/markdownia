@@ -330,8 +330,10 @@ tasks:
     desc: |
       Builds the Docker image needed for cross-compiling to any platform.
       Run this once to enable cross-platform builds from any OS.
+      Built as linux/amd64 (the common Linux release target) so CGO
+      cross-compilation works even on Apple Silicon hosts.
     cmds:
-      - docker build -t wails-cross -f build/docker/Dockerfile.cross build/docker/
+      - docker build --platform linux/amd64 -t wails-cross -f build/docker/Dockerfile.cross build/docker/
     preconditions:
       - sh: docker info > /dev/null 2>&1
         msg: "Docker is required. Please install Docker first."

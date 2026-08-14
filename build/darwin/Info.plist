@@ -13,11 +13,11 @@
         <key>CFBundleIdentifier</key>
             <string>com.markdownia.app</string>
         <key>CFBundleVersion</key>
-            <string>0.1.0</string>
+            <string>0.0.1</string>
         <key>CFBundleGetInfoString</key>
             <string>Offline-first markdown reader</string>
         <key>CFBundleShortVersionString</key>
-            <string>0.1.0</string>
+            <string>0.0.1</string>
         <key>CFBundleIconFile</key>
             <string>icons</string>
         <key>LSMinimumSystemVersion</key>

@@ -11,7 +11,7 @@ info:
   description: "Turn any pile of markdown into a beautifully rendered reading library." # The application description
   copyright: "(c) 2026, Anofac" # Copyright text
   comments: "Offline-first markdown reader" # Comments
-  version: "0.1.0" # The application version
+  version: "0.0.1" # The application version
   # cfBundleIconName: "appicon" # The macOS icon name in Assets.car icon bundles (optional)
   #                               # Should match the name of your .icon file without the extension
   #                               # If not set and Assets.car exists, defaults to "appicon"

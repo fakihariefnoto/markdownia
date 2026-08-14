@@ -47,6 +47,7 @@ tools: ## Install dev tools
 	go install github.com/go-delve/delve/cmd/dlv@latest
 	go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 	go install github.com/securego/gosec/v2/cmd/gosec@latest
+	go install github.com/wailsapp/wails/v3/cmd/wails3@v3.0.0-beta.7
 
 ## -- Frontend ---------------------------------------------------------------
 

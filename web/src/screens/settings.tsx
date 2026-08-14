@@ -231,7 +231,7 @@ export function Settings() {
 
         <TabsContent value="about" className="space-y-4">
           <dl className="space-y-2 text-sm">
-            <Row k="Version" v="0.1.0" />
+            <Row k="Version" v="0.0.1" />
             <Row
               k="Update check"
               v={<Button variant="ghost" size="sm" onClick={() => void native.checkForUpdates("anofac/markdownia").then(([res]) => toast({ type: "success", title: res?.message || "Update check complete" }))}>Check for Updates…</Button>}

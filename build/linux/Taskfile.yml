@@ -85,7 +85,7 @@ tasks:
           Docker image '{{.CROSS_IMAGE}}' not found.
           Build it first: wails3 task setup:docker
     cmds:
-      - docker run --rm -v "{{.ROOT_DIR}}:/app" {{.DOCKER_MOUNTS}} -e APP_NAME="{{.APP_NAME}}" {{if .EXTRA_TAGS}}-e EXTRA_TAGS="{{.EXTRA_TAGS}}"{{end}} {{if eq .OBFUSCATED "true"}}-e OBFUSCATED=true{{end}} {{if .GARBLE_ARGS}}-e GARBLE_ARGS="{{.GARBLE_ARGS}}"{{end}} "{{.CROSS_IMAGE}}" linux {{.DOCKER_ARCH}}
+      - docker run --rm --platform linux/amd64 -v "{{.ROOT_DIR}}:/app" {{.DOCKER_MOUNTS}} -e APP_NAME="{{.APP_NAME}}" {{if .EXTRA_TAGS}}-e EXTRA_TAGS="{{.EXTRA_TAGS}}"{{end}} {{if eq .OBFUSCATED "true"}}-e OBFUSCATED=true{{end}} {{if .GARBLE_ARGS}}-e GARBLE_ARGS="{{.GARBLE_ARGS}}"{{end}} "{{.CROSS_IMAGE}}" linux {{.DOCKER_ARCH}}
       - cmd: docker run --rm -v "{{.ROOT_DIR}}:/app" alpine chown -R $(id -u):$(id -g) /app/bin
         platforms: [linux, darwin]
       - mkdir -p {{.BIN_DIR}}
@@ -104,13 +104,16 @@ tasks:
     deps:
       - task: build
     cmds:
-      - task: create:appimage
+      # AppImage disabled for now (requires appimagetool). Re-enable when ready.
+      # - task: create:appimage
       - task: create:deb
       - task: create:rpm
       - task: create:aur
 
+  # AppImage is a portable Linux format (single runnable file). Disabled until
+  # appimagetool is installed; the .deb/.rpm installers still ship.
   create:appimage:
-    summary: Creates an AppImage
+    summary: Creates an AppImage (disabled)
     dir: build/linux/appimage
     deps:
       - task: build
@@ -170,7 +173,7 @@ tasks:
     dir: build
     cmds:
       - mkdir -p {{.ROOT_DIR}}/build/linux/appimage
-      - cp {{.ROOT_DIR}}/build/linux/markdownia.desktop {{.ROOT_DIR}}/build/linux/{{.APP_NAME}}.desktop
+      - cp {{.ROOT_DIR}}/build/linux/markdownia.desktop.tmpl {{.ROOT_DIR}}/build/linux/{{.APP_NAME}}.desktop
     vars:
       APP_NAME: '{{.APP_NAME}}'
       EXEC: '{{.APP_NAME}}'

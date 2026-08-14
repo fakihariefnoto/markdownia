@@ -13,7 +13,9 @@
 #   docker run --rm -v $(pwd):/app wails-cross windows amd64
 #   docker run --rm -v $(pwd):/app wails-cross windows arm64
 
-FROM golang:1.26-bookworm
+# Wails v3 beta.7 requires GTK >= 4.10 (uses GtkFileDialog). Debian trixie
+# ships GTK 4.18, which satisfies that; bookworm's 4.8 does not.
+FROM golang:1.26-trixie
 
 ARG TARGETARCH
 ARG GARBLE_VERSION=v0.16.0
