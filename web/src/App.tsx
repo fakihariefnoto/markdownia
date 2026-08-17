@@ -16,6 +16,7 @@ import { Settings } from "@/screens/settings"
 import { CommandPaletteOverlay } from "@/screens/command-palette"
 import { DialogHost } from "@/components/dialogs"
 import { ImportGitHost } from "@/screens/import-git"
+import { Titlebar } from "@/components/window-controls"
 
 export default function App({ startPath }: { startPath: string }) {
   const navigate = useNavigate()
@@ -27,20 +28,25 @@ export default function App({ startPath }: { startPath: string }) {
 
   return (
     <>
-      <Routes>
-        <Route path="/" element={<Shell />}>
-          <Route index element={<LibraryHome />} />
-          <Route path="welcome" element={<FirstRun />} />
-          <Route path="search" element={<SearchResults />} />
-          <Route path="annotations" element={<Annotations />} />
-          <Route path="settings" element={<Settings />} />
-          <Route path="source/:sourceId" element={<SourceOverview />} />
-          <Route path="collection/:collectionId" element={<CollectionView />} />
-          <Route path="doc/:documentId" element={<Reader />} />
-          <Route path="doc/:leftId/split/:rightId" element={<Reader split />} />
-        </Route>
-        <Route path="*" element={<Navigate to={startPath} replace />} />
-      </Routes>
+      <div className="flex h-screen w-full flex-col overflow-hidden bg-background text-foreground">
+        <Titlebar />
+        <div className="min-h-0 flex-1">
+          <Routes>
+            <Route path="/" element={<Shell />}>
+              <Route index element={<LibraryHome />} />
+              <Route path="welcome" element={<FirstRun />} />
+              <Route path="search" element={<SearchResults />} />
+              <Route path="annotations" element={<Annotations />} />
+              <Route path="settings" element={<Settings />} />
+              <Route path="source/:sourceId" element={<SourceOverview />} />
+              <Route path="collection/:collectionId" element={<CollectionView />} />
+              <Route path="doc/:documentId" element={<Reader />} />
+              <Route path="doc/:leftId/split/:rightId" element={<Reader split />} />
+            </Route>
+            <Route path="*" element={<Navigate to={startPath} replace />} />
+          </Routes>
+        </div>
+      </div>
       <CommandPaletteOverlay key={location.pathname} />
       <DialogHost />
       <ImportGitHost />

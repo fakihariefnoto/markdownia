@@ -91,9 +91,13 @@ func main() {
 		Height:    800,
 		MinWidth:  900,
 		MinHeight: 600,
+		// Frameless: no native chrome on any platform. The frontend draws its
+		// own titlebar + window controls (close/minimise/maximise) themed to the
+		// app, with --wails-draggable regions for dragging. On macOS the native
+		// frame is kept (rounded corners/shadow) and the traffic lights hidden.
+		Frameless: true,
 		Mac: application.MacWindow{
-			TitleBar:                application.MacTitleBarHiddenInset,
-			InvisibleTitleBarHeight: 40,
+			TitleBar: application.MacTitleBarHiddenInset,
 		},
 		BackgroundColour: application.NewRGB(249, 250, 251), // color.background light
 		URL:              "/",

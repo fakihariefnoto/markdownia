@@ -11,7 +11,6 @@ import { Library, FolderGit2, Archive, Bookmark, Settings as SettingsIcon, Impor
 import { SourceTree } from "@/components/source-tree"
 import { TabStrip } from "@/components/tab-strip"
 import { registerAction } from "@/lib/shortcuts"
-import { isMac } from "@/lib/shortcuts"
 import { navigate } from "@/lib/nav"
 import { cn } from "@/lib/utils"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
@@ -38,15 +37,12 @@ function ShellLayout() {
   }, [])
 
   return (
-    <div className={cn("flex h-screen w-full overflow-hidden bg-background text-foreground", isFirstRun && "hidden")}>
+    <div className="flex h-full w-full overflow-hidden bg-background text-foreground">
       {/* Sidebar column — its own surface colour, separated by a border. */}
       <aside
-        className="flex h-full shrink-0 flex-col border-r border-border bg-sidebar"
+        className={cn("flex h-full shrink-0 flex-col border-r border-border bg-sidebar", isFirstRun && "hidden")}
         style={{ width: SIDEBAR_WIDTH }}
       >
-        {/* macOS traffic lights overlay the top-left; keep them clear. */}
-        {isMac && <div className="h-10 shrink-0" style={{ "--wails-draggable": "drag" } as React.CSSProperties} />}
-
         <div className="flex h-14 shrink-0 items-center gap-2.5 px-4">
           <span className="flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-lg">
             <img src={markdowniaIcon} alt="Markdownia" className="size-full object-cover" />
