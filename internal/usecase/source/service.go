@@ -279,7 +279,19 @@ func (s *Service) RelocateSource(ctx context.Context, id int64, newPath string) 
 	src.RootPath = abs
 	src.Status = domain.StatusPending
 	src.ErrorMessage = ""
-	return s.repo.Update(ctx, &src)
+	if err := s.repo.Update(ctx, &src); err != nil {
+		return err
+	}
+
+	// Re-pointing means the old cached documents no longer match the new
+	// location. Re-index now so the library reflects the new folder; failures
+	// surface via the source status.
+	go func() {
+		_ = s.runIndex(context.Background(), id, func(ctx context.Context) error {
+			return s.indexer.Index(ctx, id)
+		})
+	}()
+	return nil
 }
 
 // RenameSource changes only the display name.

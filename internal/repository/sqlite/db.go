@@ -24,12 +24,22 @@ type DB struct {
 
 // Open opens the database at path, applies PRAGMAs, and runs forward-only
 // migrations. Both handles share the same file.
+//
+// PRAGMAs are passed via DSN _pragma params so every pooled connection (not
+// just the ones created at Open) carries busy_timeout and foreign_keys. A
+// fresh connection without busy_timeout can fail writes with an immediate
+// SQLITE_BUSY, which previously let the indexer silently drop documents under
+// concurrent worker-pool writes.
 func Open(ctx context.Context, path string, logger *slog.Logger) (*DB, error) {
 	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
 		return nil, fmt.Errorf("sqlite: mkdir %s: %w", filepath.Dir(path), err)
 	}
 
-	dsn := "file:" + path
+	dsn := "file:" + path +
+		"?_pragma=journal_mode(WAL)" +
+		"&_pragma=synchronous(NORMAL)" +
+		"&_pragma=foreign_keys(1)" +
+		"&_pragma=busy_timeout(5000)"
 	writer, err := sql.Open("sqlite", dsn)
 	if err != nil {
 		return nil, fmt.Errorf("sqlite: open writer: %w", err)
@@ -39,11 +49,10 @@ func Open(ctx context.Context, path string, logger *slog.Logger) (*DB, error) {
 		return nil, fmt.Errorf("sqlite: open reader: %w", err)
 	}
 
-	for _, db := range []*sql.DB{writer, reader} {
-		if err := applyPragmas(db); err != nil {
-			return nil, err
-		}
-	}
+	// SQLite permits one writer at a time; pinning the writer handle to a
+	// single connection serializes transactions in Go instead of surfacing
+	// SQLITE_BUSY to callers.
+	writer.SetMaxOpenConns(1)
 
 	db := &DB{Writer: writer, Reader: reader}
 	if err := migrate(ctx, writer); err != nil {
@@ -62,21 +71,6 @@ func (d *DB) Close() error {
 	}
 	if d.Reader != nil {
 		_ = d.Reader.Close()
-	}
-	return nil
-}
-
-func applyPragmas(db *sql.DB) error {
-	pragmas := map[string]string{
-		"journal_mode": "WAL",
-		"synchronous":  "NORMAL",
-		"foreign_keys": "ON",
-		"busy_timeout": "5000",
-	}
-	for k, v := range pragmas {
-		if _, err := db.Exec("PRAGMA " + k + "=" + v); err != nil {
-			return fmt.Errorf("sqlite: pragma %s: %w", k, err)
-		}
 	}
 	return nil
 }

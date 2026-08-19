@@ -6,6 +6,7 @@ import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { Folder, FolderOpen, FileText, ChevronRight } from "lucide-react"
 import { sources, library, collections } from "@/lib/wails"
+import { on } from "@/lib/events"
 import { cn } from "@/lib/utils"
 
 interface TreeNode {
@@ -61,6 +62,32 @@ export function SourceTree({ ctx, filter, route }: { ctx: "library" | "sources" 
       window.removeEventListener("markdownia:collections-changed", onColsChanged)
     }
   }, [ctx])
+
+  // When a source is re-indexed (or changes status), drop its cached tree and
+  // reload the source list so the sidebar shows the current document set and
+  // counts instead of the pre-index state.
+  useEffect(() => {
+    const invalidate = (p: any) => {
+      const sid = p?.sourceId
+      if (sid == null) return
+      setState((s) => {
+        const loaded = new Set(s.loaded)
+        loaded.delete(sid)
+        const nodes = { ...s.nodes }
+        delete nodes[sid]
+        return { ...s, loaded, nodes }
+      })
+      void sources.list().then(([list]) => {
+        setState((s) => ({ ...s, sourceItems: list || [] }))
+      })
+    }
+    const offIndexed = on("source:indexed", invalidate)
+    const offStatus = on("source:status", invalidate)
+    return () => {
+      offIndexed()
+      offStatus()
+    }
+  }, [])
 
   // Reveal a folder when a doc link targets it: ensure the source + every
   // ancestor folder is expanded, then highlight.
