@@ -22,6 +22,12 @@
 
 ---
 
+> **⚠️ Active development — expect breaking changes.** Markdownia is still in
+> active development. APIs, storage format, and features may change without
+> notice between releases. Consider this pre-release software.
+
+---
+
 ## The reading library for your markdown
 
 Markdownia is a **desktop reading app** for people who keep notes, docs, and
